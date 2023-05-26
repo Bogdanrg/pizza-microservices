@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PizzaOffice</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    {% block main %}
+        <header class="header">
+            <div class="container">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="">About us</a></li>
+                <li class="nav-item"><a href="{% url 'ordering' %}">Place an order</a></li>
+                {% if request.user.is_authenticated %}
+                <li><a class="nav-item" href="{% url 'logout' %}">  {{user.username}} | Logout</a></li>
+                {% else %}
+                    <li><a class="nav-item" href="{% url 'registration' %}">    Registration</a></li>
+                    <li><a class="nav-item" href="{% url 'login' %}">   Login</a></li>
+                {% endif %}
+                <li><a class="nav-item" href="{% url 'basket' %}">Basket</a></li>
+            </ul>
+            </div>
+        </header>
+    <div class="container">
+    {% endblock main %}
+    {% block content %}
+    {% endblock content %}
+    </div>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% block content %}
+<h1>Choice your pizzas</h1>
+<ul class="pizza_types">
+    {% for type in types %}
+    <li><div class="pizza_type"><form action="{% url 'ordering' %}" method="post">
+        <div class="choice-pizza">
+        {% csrf_token %}
+        </div>
+            <h1>{{ type.pizza_type_name }}</h1>
+            {% if type.photo %}
+                <img src="{{ type.photo.url }}" alt="">
+            {% else %}
+                <p>No photo</p>
+            {% endif %}
+            <h2 style="color: red"><em>Price: {{ type.price }}</em></h2>
+        <div class="choice-size" onclick="">
+        <fieldset>
+            <legend>Select a size of pizza:</legend>
+
+        <div>
+            <input type="hidden" name="pizza_type" value="{{ type }}">
+            <input type="radio" id="small" name="pizza_size" value="small">
+        <label for="small">small</label>
+        </div>
+
+        <div>
+            <input type="radio" id="medium" name="pizza_size" value="medium" checked>
+            <label for="medium">medium</label>
+        </div>
+
+        <div>
+            <input type="radio" id="large" name="pizza_size" value="large">
+            <label for="large">large</label>
+        </div>
+            <label for="quantity">Quantity: </label>
+            <input id="quantity" type="number" name="quantity">
+        </fieldset>
+        </div>
+        <button type="submit">Add</button>
+        </form></div></li>
+    {% endfor %}
+</ul>
+{% endblock content %}
