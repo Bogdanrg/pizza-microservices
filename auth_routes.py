@@ -8,7 +8,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
 from core.database import get_db
 from services.auth_service import get_user_by_username, get_user_by_email
-
+from services.producer import send_data
 
 auth_router = APIRouter(
     prefix='/auth',
@@ -18,13 +18,7 @@ auth_router = APIRouter(
 
 @auth_router.get('/')
 async def hello(Authorize: AuthJWT = Depends()):
-    try:
-        Authorize.jwt_required()
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token"
-        )
+    send_data({"message": "hello"})
     return {"message": "hello"}
 
 
@@ -53,6 +47,9 @@ async def signup(user: SignUpModel, db: Session = Depends(get_db)):
     )
     db.add(new_user)
     db.commit()
+    send_data({"property": "created_user", "username": new_user.username, "email": new_user.email,
+               "password": user.password,
+               "is_active": new_user.is_active, "is_staff": new_user.is_staff})
     return new_user
 
 

@@ -21,7 +21,7 @@ def jwt_required(Authorize: AuthJWT):
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token wasn't provided"
+            detail="Token wasn't provided or token is not valid"
         )
 
 

@@ -1,0 +1,76 @@
+version: '3.9'
+
+services:
+    fastapi:
+        build: .
+        volumes:
+            - .:/app
+        container_name: 'FastAPI'
+        ports:
+            - "8000:8000"
+        command: "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+        depends_on:
+            - pgdb
+        networks:
+            - services
+
+
+    pgdb:
+        image: postgres
+        ports:
+            - "5434:5432"
+        restart: always
+        environment:
+        - POSTGRES_DB=pizza_api
+        - POSTGRES_USER=admin
+        - POSTGRES_PASSWORD=admin
+        volumes:
+        - pgdbf:/var/lib/postgresql/data
+        networks:
+            - services
+
+    fqueue:
+        build: .
+        container_name: 'fqueue'
+        command: "python consumer.py"
+        depends_on:
+            - fastapi
+        volumes:
+            - . :/app
+        restart: always
+        network_mode: host
+
+    zookeeper-1:
+        image: confluentinc/cp-zookeeper:latest
+        environment:
+            ZOOKEEPER_CLIENT_PORT: 2181
+            ZOOKEEPER_TICK_TIME: 2000
+        ports:
+            - "32181:2181"
+        networks:
+            - services
+
+    kafka-1:
+        image: confluentinc/cp-kafka:latest
+        depends_on:
+            - zookeeper-1
+        ports:
+            - "9990:9990"
+        environment:
+            KAFKA_BROKER_ID: 2
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+            KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-1:29090,LISTENER_EXTERNAL://localhost:9990
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
+            KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        networks:
+            - services
+
+volumes:
+    pgdbf:
+        external: true
+
+networks:
+  services:
+    name: "services"
+    external: true

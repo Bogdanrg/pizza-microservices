@@ -7,6 +7,7 @@ from schemas import OrderModel, OrderStatusModel
 from sqlalchemy.orm import Session
 from fastapi.encoders import jsonable_encoder
 from services.auth_service import jwt_required, get_user_by_username, super_user_required
+from services.producer import send_data
 
 order_router = APIRouter(
     prefix='/orders',
@@ -15,8 +16,8 @@ order_router = APIRouter(
 
 
 @order_router.get('/')
-async def hello(Authorize: AuthJWT = Depends()):
-    jwt_required(Authorize)
+async def hello():
+    send_data('data')
     return jsonable_encoder("hello")
 
 
@@ -26,6 +27,7 @@ async def place_an_order(order: OrderModel, Authorize: AuthJWT = Depends(), db: 
 
     current_user = Authorize.get_jwt_subject()
     user = get_user_by_username(db, current_user)
+    print(user)
     new_order = Order(
         pizza_size=order.pizza_size,
         quantity=order.quantity,
@@ -117,6 +119,12 @@ async def update_order_status(order_id: int, order: OrderStatusModel, Authorize:
     super_user_required(Authorize, db)
     order_to_update = db.query(Order).filter(Order.id == order_id).first()
     order_to_update.order_status = order.order_status
+    response = {
+        'id': order_to_update.id,
+        'quantity': order_to_update.quantity,
+        'order_status': order_to_update.order_status,
+        'pizza_size': order_to_update.pizza_size
+    }
 
     db.commit()
-    return jsonable_encoder(order_to_update)
+    return jsonable_encoder(response)
