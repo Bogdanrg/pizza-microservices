@@ -6,3 +6,4 @@ tzdata==2023.3
 kafka-python
 Werkzeug==2.2.3
 pillow
+djangorestframework

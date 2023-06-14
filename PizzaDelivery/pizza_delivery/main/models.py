@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 
 
 class PizzaManager(models.Manager):
@@ -21,6 +22,7 @@ class OrderManager(models.Manager):
 class PizzaType(models.Model):
     price = models.PositiveIntegerField(default=15)
     pizza_type_name = models.CharField(max_length=250)
+    description = models.TextField(max_length=1000)
     photo = models.ImageField(upload_to='pizza_photo')
 
     def __str__(self):
@@ -36,14 +38,22 @@ class Pizza(models.Model):
     )
     pizza_size = models.CharField(max_length=250)
     pizza_type = models.ForeignKey("PizzaType", on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(verbose_name="количество")
+    quantity = models.PositiveIntegerField(verbose_name="количество", default=1)
     order = models.ForeignKey("Order", on_delete=models.CASCADE)
     objects = PizzaManager()
 
+    def get_absolute_url(self):
+        return reverse('basket-detail', kwargs={'pk': self.pk})
+
 
 class Order(models.Model):
+    ORDER_STATUS = (
+        ('pending', 'pending'),
+        ('in-transit', 'in-transit'),
+        ('delivered', 'delivered')
+    )
     total_price = models.PositiveIntegerField(default=0)
-    order_status = models.CharField(max_length=250)
+    order_status = models.CharField(choices=ORDER_STATUS, default='pending', max_length=30)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     objects = OrderManager()
 

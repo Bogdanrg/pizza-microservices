@@ -53,12 +53,20 @@ body{
     width: 30px;
     height: 30px;
 }
-.choice-pizza{
+.show-description{
     border-radius: 50%;
     border-style: solid;
     border-color: darkgray;
     width: 30px;
     height: 30px;
+}
+.show-description-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: nowrap;
+    flex-direction: row-reverse;
+    margin-bottom: 0px;
 }
 .basket-list{
     display: flex;
@@ -101,4 +109,12 @@ body{
     -ms-transition:     color 1s;
     -o-transition:      color 1s;
     transition:         color 1s;
+}
+.show-description:hover{
+    border-radius: 50%;
+    border-style: solid;
+    border-color: darkgray;
+    width: 30px;
+    height: 30px;
+    color: antiquewhite;
 }

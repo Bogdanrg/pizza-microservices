@@ -1,19 +1,26 @@
 {% extends 'main/layout.html' %}
 {% load static %}
 {% block content %}
-<h1>Choice your pizzas</h1>
+<h1 style="text-align: center;">Choice your pizzas</h1>
 <ul class="pizza_types">
     {% for type in types %}
     <li><div class="pizza_type"><form action="{% url 'ordering' %}" method="post">
-        <div class="choice-pizza">
-        {% csrf_token %}
+        <div class="show-description-container">
+        <div class="show-description" onmousedown="showDescription(this)" onmouseup="showPhoto(this);">
         </div>
+            <p>Description</p>
+        {% csrf_token %}
+
+            </div>
             <h1>{{ type.pizza_type_name }}</h1>
-            {% if type.photo %}
-                <img src="{{ type.photo.url }}" alt="">
-            {% else %}
-                <p>No photo</p>
-            {% endif %}
+            <div style="width: 200px; height: 200px; padding-left: 35px" class="photo-description">
+                {% if type.photo %}
+                    <img src="{{ type.photo.url }}" alt="">
+                {% else %}
+                    <p>No photo</p>
+                {% endif %}
+                <h4 style="display: none;">{{ type.description }}</h4>
+            </div>
             <h2 style="color: red"><em>Price: {{ type.price }}</em></h2>
         <div class="choice-size" onclick="">
         <fieldset>
@@ -35,7 +42,7 @@
             <label for="large">large</label>
         </div>
             <label for="quantity">Quantity: </label>
-            <input id="quantity" type="number" name="quantity">
+            <input id="quantity" type="number" name="quantity" value="1">
         </fieldset>
         </div>
         <button type="submit">Add</button>

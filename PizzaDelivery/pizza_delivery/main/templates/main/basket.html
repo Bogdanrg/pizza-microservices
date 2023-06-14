@@ -1,27 +1,35 @@
 {% extends 'main/layout.html' %}
 {% load static %}
 {% block content %}
-<h1>Your basket:</h1>
-{% if not pizzas %}
-<h1>Yoг have not ordered any pizza yet!</h1>
-{% else %}
-<div class="container-basket">
-    <ul class="basket-list" style="list-style: none;">
-    {% for pizza in pizzas %}
-            <li><div class="basket-item">
-            <div class="basket-header">
-                <h2 style="text-align: center">{{ pizza.pizza_type }}</h2>
-                <div class="remove-pizza" onclick="removePizza(this);"></div>
-            </div>
-            <br>
-            <img src="{{ pizza.pizza_type.photo.url }}" alt="">
-            <h2 style="text-align: center;">Quantity:  {{ pizza.quantity }}</h2>
-        </div></li>
-    {% endfor %}
-    </ul>
-    <h2>
-        Total cost is: {{ total_sum }}
-    </h2>
+<div class="basket-main">
+    <h1 style="text-align: center;">Your basket:</h1>
+    {% if not pizzas %}
+    <h1 style="text-align: center;">Yoг have not ordered any pizza yet!</h1>
+    {% else %}
+    <div class="container-basket">
+        <ul class="basket-list" style="list-style: none;">
+        {% for pizza in pizzas %}
+                <li><div class="basket-item">
+                <div class="basket-header">
+                    <h2 style="text-align: center">{{ pizza.pizza_type }}</h2>
+                    <form action="{{ pizza.get_absolute_url }}" method="post">
+                        {% csrf_token %}
+                        <button class="remove-pizza" type="submit" > </button>
+                    </form>
+                </div>
+                <br>
+                <img src="{{ pizza.pizza_type.photo.url }}" alt="">
+                <h2 style="text-align: center;">Quantity:  {{ pizza.quantity }}</h2>
+            </div></li>
+        {% endfor %}
+        </ul>
+        <h2>
+            Total cost is: {{ total_sum }}
+        </h2>
+</div>
+    <div class="confirmation">
+
+    </div>
 </div>
 {% endif %}
 {% endblock content %}
