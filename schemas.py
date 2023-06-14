@@ -59,3 +59,10 @@ class OrderStatusModel(BaseModel):
                 "order_status": "PENDING"
             }
         }
+
+
+class PizzaTypeModel(BaseModel):
+    id: Optional[int]
+    price: int
+    pizza_type_name: str
+    description: Optional[str]

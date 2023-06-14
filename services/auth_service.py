@@ -15,6 +15,10 @@ def get_user_by_email(db: Session, email: str):
     return db.query(User).filter(User.username == email).first()
 
 
+def get_user_by_id(db: Session, id: int):
+    return db.query(User).filter(User.id == id).first()
+
+
 def jwt_required(Authorize: AuthJWT):
     try:
         Authorize.jwt_required()

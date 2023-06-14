@@ -21,8 +21,10 @@ if config.config_file_name is not None:
 
 from models import User, Order
 from core.database import Base
+
 Base.metadata.create_all(bind=engine)
 target_metadata = Base.metadata
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
